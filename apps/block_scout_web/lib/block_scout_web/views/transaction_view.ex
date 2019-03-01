@@ -91,6 +91,9 @@ defmodule BlockScoutWeb.TransactionView do
 
   def contract_creation?(_), do: false
 
+  #  def utf8_encode() do
+  #  end
+
   def fee(%Transaction{} = transaction) do
     {_, value} = Chain.fee(transaction, :wei)
     value
@@ -110,10 +113,12 @@ defmodule BlockScoutWeb.TransactionView do
     end
   end
 
-  def formatted_status(transaction) do
-    transaction
-    |> Chain.transaction_to_status()
-    |> case do
+  def transaction_status(transaction) do
+    Chain.transaction_to_status(transaction)
+  end
+
+  def formatted_status(status) do
+    case status do
       :pending -> gettext("Pending")
       :awaiting_internal_transactions -> gettext("(Awaiting internal transactions for status)")
       :success -> gettext("Success")
