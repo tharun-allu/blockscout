@@ -2,12 +2,19 @@
   <%= render BlockScoutWeb.TransactionView, "overview.html", assigns %>
 
   <div class="card">
-    <div class="card-header">
-      <%= render BlockScoutWeb.TransactionView, "_tabs.html", assigns %>
-    </div>
+    <%= render BlockScoutWeb.TransactionView, "_tabs.html", assigns %>
 
     <div class="card-body">
       <h2 class="card-title"><%= gettext "Logs" %></h2>
+
+      <%= if @next_page_params do %>
+      <%= render BlockScoutWeb.CommonComponentsView, "_pagination_container.html", position: "top", cur_page_number: "1", show_pagination_limit: true, next_page_path: transaction_log_path(@conn,:index, @transaction, @next_page_params) %>
+      <% end %>
+
+      <%= if !@next_page_params do %>
+      <%= render BlockScoutWeb.CommonComponentsView, "_pagination_container.html", position: "top", cur_page_number: "1", show_pagination_limit: true %>
+      <% end %>
+
       <%= if Enum.count(@logs) > 0 do %>
         <%= for log <- @logs do %>
           <div data-test="transaction_log" class="tile tile-muted">
@@ -66,9 +73,17 @@
                               <% :error -> %>
                                 <%= nil %>
                               <% copy_text -> %>
-                                <button type="button" class="copy icon-link" data-toggle="tooltip" data-placement="top" data-clipboard-text="<%= copy_text %>" aria-label="<%= gettext "Copy Value" %>">
-                                  <i class="fas fa-clone"></i>
-                                </button>
+                                <span
+                                  aria-label='<%= gettext "Copy Value" %>'
+                                  class="btn-copy-ico"
+                                  data-clipboard-text="<%= copy_text %>"
+                                  data-placement="top"
+                                  data-toggle="tooltip"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.5 32.5" width="32" height="32">
+                                    <path fill-rule="evenodd" d="M23.5 20.5a1 1 0 0 1-1-1v-9h-9a1 1 0 0 1 0-2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zm-3-7v10a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1zm-2 1h-8v8h8v-8z"/>
+                                  </svg>
+                                </span>
                             <% end %>
                           </th>
                           <td><%= name %></td>
@@ -134,6 +149,15 @@
       <% end %>
 
       <%= if @next_page_params do %>
+      <%= render BlockScoutWeb.CommonComponentsView, "_pagination_container.html", position: "bottom", cur_page_number: "1", show_pagination_limit: true, next_page_path: transaction_log_path(@conn,:index, @transaction, @next_page_params) %>
+      <% end %>
+
+      <%= if !@next_page_params do %>
+      <%= render BlockScoutWeb.CommonComponentsView, "_pagination_container.html", position: "bottom", cur_page_number: "1", show_pagination_limit: true %>
+      <% end %>
+
+      <!--
+      <%= if @next_page_params do %>
         <%= link(
           gettext("Newer"),
           class: "button button-secondary button-sm u-float-right mt-3",
@@ -145,6 +169,7 @@
           )
         ) %>
       <% end %>
+      -->
     </div>
   </div>
 </section>
